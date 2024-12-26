@@ -1,0 +1,22 @@
+---
+# tasks file for nginx
+- name: Install nginx packages
+  ansible.builtin.apt:
+    pkg: "{{ nginx_installing_packages }}"
+    state: present
+    update_cache: true
+  become: true
+
+- name: Ensure nginx service is enabled and started
+  ansible.builtin.systemd_service:
+    name: "{{ nginx_systemd_service_name }}"
+    enabled: true
+    state: started
+
+- name: Create server blocks
+  ansible.builtin.include_tasks:
+    file: "create_server_blocks.yml"
+    apply:
+      notify: Restart nginx service
+  when: nginx_server_blocks_domain_to_conf_template_and_static_files_path_dict is defined
+  with_dict: "{{ nginx_server_blocks_domain_to_conf_template_and_static_files_path_dict }}"

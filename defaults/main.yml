@@ -1,0 +1,13 @@
+---
+# defaults file for nginx
+
+nginx_installing_packages: nginx
+nginx_systemd_service_name: nginx
+nginx_static_files_general_path: /var/www
+nginx_static_files_mode: "755"
+nginx_available_sites_path: /etc/nginx/sites-available
+nginx_conf_template_mode: "755"
+nginx_conf_validation_cmd: bash -c 'nginx -t -c /dev/stdin <<< "events {worker_connections 4;} http { include %s; }"'
+nginx_enabled_sites_path: /etc/nginx/sites-enabled
+
+# nginx_server_blocks_domain_to_conf_template_and_static_files_path_dict:

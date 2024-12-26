@@ -1,0 +1,19 @@
+- name: Copy static files for server blocks from remote
+  ansible.builtin.copy:
+    src: "{{ item.value.static_files_path }}"
+    remote_src: true
+    dest: "{{ nginx_static_files_general_path }}/{{ item.key }}"
+    mode: "{{ nginx_static_files_mode }}"
+
+- name: Write configuration template as available site
+  ansible.builtin.template:
+    src: "{{ item.value.conf_template }}"
+    dest: "{{ nginx_available_sites_path }}/{{ item.key }}"
+    mode: "{{ nginx_conf_template_mode }}"
+    validate: "{{ nginx_conf_validation_cmd }}"
+
+- name: Enable site via creating symlink from configuration template as available site
+  ansible.builtin.file:
+    src: "{{ nginx_available_sites_path }}/{{ item.key }}"
+    dest: "{{ nginx_enabled_sites_path }}/{{ item.key }}"
+    state: link
